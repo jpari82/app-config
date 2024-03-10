@@ -71,9 +71,8 @@
     const deleteButton = $('<button class="btn btn-danger">').text('Delete').on('click', function() {
       div.remove();
       filterData();
-      const select = $('select');
-      const selectedKey = input.attr('data-key');
-      select.find(`option[value='${selectedKey}']`).prop('disabled', false);
+      $('select').append($('<option>').val(key).text(`Filter by ${key}`));
+      selectDefaultOption();
     });
     deleteButtonDiv.append(deleteButton);
 
@@ -83,9 +82,7 @@
 
     filterOptionsContainer.append(div);
 
-    const select = $('select');
-    const selectedKey = input.attr('data-key');
-    select.find(`option[value='${key}']`).prop('disabled', true);
+    $('select').find(`option[value='${key}']`).remove();
   }
 
   // Function to filter data based on input values
@@ -101,7 +98,14 @@
     const filteredData = jsonData.filter(item => {
       return Object.keys(filters).every(key => {
         const filterValue = filters[key];
-        return filterValue === '' || (item[key] && item[key].toString().toLowerCase().includes(filterValue));
+       /* if (key === 'age') {
+          const itemAge = parseInt(item[key]);
+          const filterAge = parseInt(filters[key]);
+          return isNaN(filterAge) || itemAge === filterAge;
+        } else {
+		*/
+          return filterValue === '' || (item[key] && item[key].toString().toLowerCase().includes(filterValue));
+        //}
       });
     });
 
@@ -116,19 +120,24 @@
       const selectedKey = $(this).val();
       if (selectedKey && !$('.filter-input input[data-key="' + selectedKey + '"]').length) {
         generateFilterOption(selectedKey);
-        $(this).find(`option[value='${selectedKey}']`).prop('disabled', true);
       }
+      selectDefaultOption();
     });
 
     const defaultOption = $('<option>').val('').text('Select column to filter').prop('disabled', true).prop('selected', true);
     select.append(defaultOption);
 
     Object.keys(jsonData[0]).forEach(key => {
-      const option = $('<option>').val(key).text(key);
+      const option = $('<option>').val(key).text(`Filter by ${key}`);
       select.append(option);
     });
 
     filterOptionsContainer.append(select);
+  }
+
+  // Function to select the default option in the dropdown
+  function selectDefaultOption() {
+    $('select').val('').trigger('change');
   }
 
   // Generate filter dropdown
