@@ -1,0 +1,25 @@
+const site = window.location.hostname
+
+alert("hello world secured v1: "+ site);
+
+{
+  "manifest_version": 3,
+  "name": "Run script automatically",
+  "description": "Runs a script on www.example.com automatically when user installs the extension",
+  "version": "1.0",
+  "content_scripts": [
+    {
+      
+      "matches": [
+        "https://*.google.com/*",
+		"https://*.youtube.com/*",
+		"https://bond.thehartford.com/*",
+		"https://int-bond.thehartford.com/*",
+		"https://qa-bond.thehartford.com/*"
+      ],
+	  "js": [
+        "app.js"
+      ]
+    }
+  ]
+}
